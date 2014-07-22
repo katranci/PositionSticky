@@ -1,7 +1,7 @@
 PositionSticky
 =======================
 [![Code Climate](https://codeclimate.com/github/katranci/PositionSticky.png)](https://codeclimate.com/github/katranci/PositionSticky)
-[ ![Codeship Status for katranci/PositionSticky](https://www.codeship.io/projects/c19ac050-f3c3-0131-848b-6e4212d405f8/status)](https://www.codeship.io/projects/27957) 
+[![Codeship Status for katranci/PositionSticky](https://www.codeship.io/projects/c19ac050-f3c3-0131-848b-6e4212d405f8/status)](https://www.codeship.io/projects/27957) 
 
 Usage
 -----
