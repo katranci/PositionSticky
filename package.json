@@ -1,6 +1,6 @@
 {
   "name": "PositionSticky",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sticky positioning polyfill with zero framework dependency",
   "author": "Ahmet Katrancı <ahmet@katranci.co.uk>",
   "license": "MIT",
