@@ -58,7 +58,8 @@ module.exports = function(config) {
     logLevel: config.LOG_INFO,
 
     sauceLabs: {
-      testName: 'Tests'
+      testName: 'Tests',
+      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER || Math.floor((new Date).getTime() / 1000 - 1230768000).toString()
     },
     captureTimeout: 120000,
     customLaunchers: customLaunchers,
