@@ -5,7 +5,7 @@
   "author": "Ahmet Katrancı <ahmet@katranci.co.uk>",
   "license": "MIT",
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test-sauce"
   },
   "devDependencies": {
     "karma": "~0.12.16",
@@ -19,7 +19,8 @@
     "gulp-jshint": "~1.7.1",
     "jshint-stylish": "~0.4.0",
     "gulp-jsdoc": "~0.1.4",
-    "gulp-karma": "0.0.4"
+    "gulp-karma": "0.0.4",
+    "karma-sauce-launcher": "~0.2.9"
   },
   "private": true
 }

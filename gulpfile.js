@@ -14,7 +14,7 @@ var testFiles = [
 ];
 
 
-gulp.task('default', ['test', 'lint'], function() {
+gulp.task('default', ['test-local', 'lint'], function() {
   gulp.src(['./src/rAF.js', './src/PositionSticky.js'])
       .pipe(jsdoc('./docs'))
       .pipe(concat('PositionSticky.js'))
@@ -25,7 +25,7 @@ gulp.task('default', ['test', 'lint'], function() {
 });
 
 
-gulp.task('test', function() {
+gulp.task('test-local', function() {
   return gulp.src(testFiles)
       .pipe(karma({
         configFile: 'karma.conf.js',
@@ -35,6 +35,15 @@ gulp.task('test', function() {
         // Make sure failed tests cause gulp to exit non-zero
         throw err;
       });
+});
+
+
+gulp.task('test-sauce', function() {
+  return gulp.src(testFiles)
+      .pipe(karma({
+        configFile: 'karma-ci.conf.js',
+        action: 'run'
+      }));
 });
 
 
