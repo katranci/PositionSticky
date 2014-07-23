@@ -1,6 +1,8 @@
 language: node_js
 node_js:
 - '0.10'
+before_script:
+- npm install -g karma-cli
 env:
   global:
   - secure: YIGqeIndEd4iy6xBBF3WGzEL11HLKwpEP7j8oa0/b/UgnSNAoQ6ZgC5T0WEZk28dKDV8coBVpqNG/5B7gSUA00OejRBvKfT3ZURYsQhoNCkjuSmhYUKALptYu0OGfg58Jl3vuesPpF4A3A960Nilz4F63DMz26pnmy12cZScuPY=
