@@ -1,7 +1,9 @@
 // Karma configuration for Sauce Labs
 // This is the configuration used in CI boxes
 
-var fs = require('fs');
+var fs        = require('fs'),
+    bowerJson = require('./bower.json');
+
 
 module.exports = function(config) {
 
@@ -58,7 +60,7 @@ module.exports = function(config) {
     logLevel: config.LOG_INFO,
 
     sauceLabs: {
-      testName: 'Tests'
+      testName: bowerJson.name
     },
     captureTimeout: 120000,
     customLaunchers: customLaunchers,
