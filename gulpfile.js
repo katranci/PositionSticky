@@ -51,7 +51,10 @@ gulp.task('build', function() {
 
 gulp.task('jsdoc', function() {
   return gulp.src('./src/PositionSticky.js')
-      .pipe(jsdoc('./docs'))
+      .pipe(jsdoc.parser({}))
+      .pipe(jsdoc.generator('./docs', {}, {
+        showPrivate: true
+      }));
 });
 
 
