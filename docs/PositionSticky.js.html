@@ -53,12 +53,13 @@ var PositionSticky = {
    * @param options
    * @returns {PositionSticky}
    * @static
+   * @public
    */
   create: function(element, options) {
     if (typeof options === 'undefined') {
       options = {};
     }
-    return Object.create(PositionSticky).init(element, options);
+    return Object.create(PositionSticky)._init(element, options);
   },
 
   /**
@@ -68,32 +69,33 @@ var PositionSticky = {
    * @param options {Object}
    * @returns {PositionSticky}
    * @instance
+   * @private
    */
-  init: function(element, options) {
+  _init: function(element, options) {
     this.constructor = PositionSticky;
-    this.window = window;
-    this.element = element;
-    this.container = element.parentNode;
-    this.posScheme = PositionSticky.POS_SCHEME_STATIC;
-    this.isTicking = false;
-    this.threshold = null;
-    this.options = options;
-    this.boundingBoxHeight = null;
-    this.leftPositionWhenAbsolute = null;
-    this.leftPositionWhenFixed = null;
-    this.containerPaddingBottom = null;
-    this.latestKnownScrollY = this.window.pageYOffset;
+    this._window = window;
+    this._element = element;
+    this._container = element.parentNode;
+    this._posScheme = PositionSticky.POS_SCHEME_STATIC;
+    this._isTicking = false;
+    this._threshold = null;
+    this._options = options;
+    this._boundingBoxHeight = null;
+    this._leftPositionWhenAbsolute = null;
+    this._leftPositionWhenFixed = null;
+    this._containerPaddingBottom = null;
+    this._latestKnownScrollY = this._window.pageYOffset;
 
-    this.validateContainerPosScheme();
-    this.setOffsetTop();
-    this.setOffsetBottom();
-    this.calcThreshold();
-    this.setElementWidth();
-    this.setLeftPositionWhenAbsolute();
-    this.setLeftPositionWhenFixed();
-    this.setBoundingBoxHeight();
-    this.createPlaceholder();
-    this.subscribeToWindowScroll();
+    this._validateContainerPosScheme();
+    this._setOffsetTop();
+    this._setOffsetBottom();
+    this._calcThreshold();
+    this._setElementWidth();
+    this._setLeftPositionWhenAbsolute();
+    this._setLeftPositionWhenFixed();
+    this._setBoundingBoxHeight();
+    this._createPlaceholder();
+    this._subscribeToWindowScroll();
 
     return this;
   },
@@ -103,11 +105,12 @@ var PositionSticky = {
    * so that when the sticky element is positioned absolutely it is positioned within its container
    *
    * @instance
+   * @private
    */
-  validateContainerPosScheme: function() {
-    var containerPosScheme = this.container.style.position;
+  _validateContainerPosScheme: function() {
+    var containerPosScheme = this._container.style.position;
     if (containerPosScheme != 'relative' &amp;&amp; containerPosScheme != 'absolute') {
-      this.container.style.position = 'relative';
+      this._container.style.position = 'relative';
     }
   },
 
@@ -116,38 +119,41 @@ var PositionSticky = {
    * when it becomes sticky
    *
    * @instance
+   * @private
    */
-  setOffsetTop: function() {
-    if (typeof this.options.offsetTop === 'number' &amp;&amp; this.options.offsetTop >= 0) {
-      this.offsetTop = this.options.offsetTop;
+  _setOffsetTop: function() {
+    if (typeof this._options.offsetTop === 'number' &amp;&amp; this._options.offsetTop >= 0) {
+      this.offsetTop = this._options.offsetTop;
     } else {
-      var topBorderWidth = parseInt(this.window.getComputedStyle(this.container).borderTopWidth, 10);
-      var topPadding = parseInt(this.window.getComputedStyle(this.container).paddingTop, 10);
+      var topBorderWidth = parseInt(this._window.getComputedStyle(this._container).borderTopWidth, 10);
+      var topPadding = parseInt(this._window.getComputedStyle(this._container).paddingTop, 10);
       this.offsetTop = topBorderWidth + topPadding;
     }
   },
 
   /**
-   * Sets the amount to subtract in #canStickyFitInContainer and also sets the
+   * Sets the amount to subtract in #_canStickyFitInContainer and also sets the
    * distance that the sticky element will have from the bottom of its container
    * when it is positioned absolutely
    *
    * @instance
+   * @private
    */
-  setOffsetBottom: function() {
-    var bottomBorderWidth = parseInt(this.window.getComputedStyle(this.container).borderBottomWidth, 10);
-    var bottomPadding = parseInt(this.window.getComputedStyle(this.container).paddingBottom, 10);
+  _setOffsetBottom: function() {
+    var bottomBorderWidth = parseInt(this._window.getComputedStyle(this._container).borderBottomWidth, 10);
+    var bottomPadding = parseInt(this._window.getComputedStyle(this._container).paddingBottom, 10);
     this.offsetBottom = bottomBorderWidth + bottomPadding;
-    this.containerPaddingBottom = bottomPadding;
+    this._containerPaddingBottom = bottomPadding;
   },
 
   /**
    * Calculates the point where the sticky behaviour should start
    *
    * @instance
+   * @private
    */
-  calcThreshold: function() {
-    this.threshold = this.getElementDistanceFromDocumentTop() - this.offsetTop;
+  _calcThreshold: function() {
+    this._threshold = this._getElementDistanceFromDocumentTop() - this.offsetTop;
   },
 
   /**
@@ -155,10 +161,11 @@ var PositionSticky = {
    * is positioned absolutely or fixed it doesn't lose its shape
    *
    * @instance
+   * @private
    */
-  setElementWidth: function() {
-    var width = this.window.getComputedStyle(this.element).width;
-    this.element.style.width = width;
+  _setElementWidth: function() {
+    var width = this._window.getComputedStyle(this._element).width;
+    this._element.style.width = width;
   },
 
   /**
@@ -166,36 +173,39 @@ var PositionSticky = {
    * and subtracts any horizontal margins and saves it
    *
    * @instance
+   * @private
    */
-  setLeftPositionWhenAbsolute: function() {
-    var marginLeft = parseInt(this.window.getComputedStyle(this.element).marginLeft, 10);
-    this.leftPositionWhenAbsolute = this.element.offsetLeft - marginLeft;
+  _setLeftPositionWhenAbsolute: function() {
+    var marginLeft = parseInt(this._window.getComputedStyle(this._element).marginLeft, 10);
+    this._leftPositionWhenAbsolute = this._element.offsetLeft - marginLeft;
   },
 
   /**
    * Gets the element's distance from document left and saves it
    *
    * @instance
+   * @private
    *
    * @todo Write a test that is covering when the page is scrolled
    */
-  setLeftPositionWhenFixed: function() {
-    var marginLeft = parseInt(this.window.getComputedStyle(this.element).marginLeft, 10);
-    this.leftPositionWhenFixed = this.window.pageXOffset + this.element.getBoundingClientRect().left - marginLeft;
+  _setLeftPositionWhenFixed: function() {
+    var marginLeft = parseInt(this._window.getComputedStyle(this._element).marginLeft, 10);
+    this._leftPositionWhenFixed = this._window.pageXOffset + this._element.getBoundingClientRect().left - marginLeft;
   },
 
   /**
    * Saves element's bounding box height to an instance property so that it is not
-   * calculated on every #update. When updatePlaceholder boolean is true, it also
+   * calculated on every #_update. When updatePlaceholder boolean is true, it also
    * updates the placeholder's height.
    *
    * @param updatePlaceholder {boolean}
    * @instance
+   * @private
    */
-  setBoundingBoxHeight: function(updatePlaceholder) {
-    this.boundingBoxHeight = this.element.getBoundingClientRect().height;
+  _setBoundingBoxHeight: function(updatePlaceholder) {
+    this._boundingBoxHeight = this._element.getBoundingClientRect().height;
     if (updatePlaceholder === true) {
-      this.placeholder.style.height = this.boundingBoxHeight + 'px';
+      this.placeholder.style.height = this._boundingBoxHeight + 'px';
     }
   },
 
@@ -204,16 +214,17 @@ var PositionSticky = {
    * when the element is positioned absolutely or fixed
    *
    * @instance
+   * @private
    *
    * @todo Float computation doesn't work on Firefox and IE9
    */
-  createPlaceholder: function() {
+  _createPlaceholder: function() {
     var placeholder = document.createElement('DIV');
 
-    var width   = this.element.getBoundingClientRect().width + 'px';
-    var height  = this.boundingBoxHeight + 'px';
-    var margin  = this.window.getComputedStyle(this.element).margin;
-    var float   = this.window.getComputedStyle(this.element).float;
+    var width   = this._element.getBoundingClientRect().width + 'px';
+    var height  = this._boundingBoxHeight + 'px';
+    var margin  = this._window.getComputedStyle(this._element).margin;
+    var float   = this._window.getComputedStyle(this._element).float;
 
     placeholder.style.display = 'none';
     placeholder.style.width   = width;
@@ -221,17 +232,18 @@ var PositionSticky = {
     placeholder.style.margin  = margin;
     placeholder.style.float   = float;
 
-    this.container.insertBefore(placeholder, this.element);
+    this._container.insertBefore(placeholder, this._element);
     this.placeholder = placeholder;
   },
 
   /**
-   * Attaches #onScroll method to Window.onscroll event
+   * Attaches #_onScroll method to Window.onscroll event
    *
    * @instance
+   * @private
    */
-  subscribeToWindowScroll: function() {
-    this.window.addEventListener('scroll', this.onScroll.bind(this));
+  _subscribeToWindowScroll: function() {
+    this._window.addEventListener('scroll', this._onScroll.bind(this));
   },
 
   /**
@@ -239,72 +251,79 @@ var PositionSticky = {
    *
    * @see [Debouncing Scroll Events]{@link http://www.html5rocks.com/en/tutorials/speed/animations/#debouncing-scroll-events}
    * @instance
+   * @private
    *
-   * @todo Don't run update when container is not visible
+   * @todo Don't run _update when container is not visible
    */
-  onScroll: function() {
-    if (!this.isTicking) {
-      this.latestKnownScrollY = this.window.pageYOffset;
-      this.window.requestAnimationFrame(this.update.bind(this));
-      this.isTicking = true;
+  _onScroll: function() {
+    if (!this._isTicking) {
+      this._latestKnownScrollY = this._window.pageYOffset;
+      this._window.requestAnimationFrame(this._update.bind(this));
+      this._isTicking = true;
     }
   },
 
   /**
    * @returns {boolean}
    * @instance
+   * @private
    */
-  isStatic: function() {
-    return this.posScheme === PositionSticky.POS_SCHEME_STATIC;
+  _isStatic: function() {
+    return this._posScheme === PositionSticky.POS_SCHEME_STATIC;
   },
 
   /**
    * @instance
+   * @private
    */
-  makeStatic: function() {
-    this.element.style.position = 'static';
+  _makeStatic: function() {
+    this._element.style.position = 'static';
     this.placeholder.style.display = 'none';
-    this.posScheme = PositionSticky.POS_SCHEME_STATIC;
+    this._posScheme = PositionSticky.POS_SCHEME_STATIC;
   },
 
   /**
    * @returns {boolean}
    * @instance
+   * @private
    */
-  isFixed: function() {
-    return this.posScheme === PositionSticky.POS_SCHEME_FIXED;
+  _isFixed: function() {
+    return this._posScheme === PositionSticky.POS_SCHEME_FIXED;
   },
 
   /**
    * @instance
+   * @private
    */
-  makeFixed: function() {
-    this.element.style.bottom = null;
-    this.element.style.position = 'fixed';
-    this.element.style.top = this.offsetTop + 'px';
-    this.element.style.left = this.leftPositionWhenFixed + 'px';
+  _makeFixed: function() {
+    this._element.style.bottom = null;
+    this._element.style.position = 'fixed';
+    this._element.style.top = this.offsetTop + 'px';
+    this._element.style.left = this._leftPositionWhenFixed + 'px';
     this.placeholder.style.display = 'block';
-    this.posScheme = PositionSticky.POS_SCHEME_FIXED;
+    this._posScheme = PositionSticky.POS_SCHEME_FIXED;
   },
 
   /**
    * @returns {boolean}
    * @instance
+   * @private
    */
-  isAbsolute: function() {
-    return this.posScheme === PositionSticky.POS_SCHEME_ABSOLUTE;
+  _isAbsolute: function() {
+    return this._posScheme === PositionSticky.POS_SCHEME_ABSOLUTE;
   },
 
   /**
    * @instance
+   * @private
    */
-  makeAbsolute: function() {
-    this.element.style.top = null;
-    this.element.style.position = 'absolute';
-    this.element.style.bottom = this.containerPaddingBottom + 'px';
-    this.element.style.left = this.leftPositionWhenAbsolute + 'px';
+  _makeAbsolute: function() {
+    this._element.style.top = null;
+    this._element.style.position = 'absolute';
+    this._element.style.bottom = this._containerPaddingBottom + 'px';
+    this._element.style.left = this._leftPositionWhenAbsolute + 'px';
     this.placeholder.style.display = 'block';
-    this.posScheme = PositionSticky.POS_SCHEME_ABSOLUTE;
+    this._posScheme = PositionSticky.POS_SCHEME_ABSOLUTE;
   },
 
   /**
@@ -314,21 +333,22 @@ var PositionSticky = {
    * Otherwise, it positions the element absolutely.
    *
    * @instance
+   * @private
    */
-  update: function() {
-    this.isTicking = false;
+  _update: function() {
+    this._isTicking = false;
 
-    if (this.isBelowThreshold()) {
-      if (!this.isStatic()) {
-        this.makeStatic();
+    if (this._isBelowThreshold()) {
+      if (!this._isStatic()) {
+        this._makeStatic();
       }
-    } else if (this.canStickyFitInContainer()) {
-      if (!this.isFixed()) {
-        this.makeFixed();
+    } else if (this._canStickyFitInContainer()) {
+      if (!this._isFixed()) {
+        this._makeFixed();
       }
     } else {
-      if (!this.isAbsolute()) {
-        this.makeAbsolute();
+      if (!this._isAbsolute()) {
+        this._makeAbsolute();
       }
     }
   },
@@ -339,9 +359,10 @@ var PositionSticky = {
    *
    * @returns {boolean}
    * @instance
+   * @private
    */
-  isBelowThreshold: function() {
-    if (this.latestKnownScrollY &lt; this.threshold) {
+  _isBelowThreshold: function() {
+    if (this._latestKnownScrollY &lt; this._threshold) {
       return true;
     }
     return false;
@@ -352,9 +373,10 @@ var PositionSticky = {
    *
    * @returns {boolean}
    * @instance
+   * @private
    */
-  canStickyFitInContainer: function() {
-    return this.getAvailableSpaceInContainer() >= this.boundingBoxHeight;
+  _canStickyFitInContainer: function() {
+    return this._getAvailableSpaceInContainer() >= this._boundingBoxHeight;
   },
 
   /**
@@ -363,9 +385,10 @@ var PositionSticky = {
    *
    * @returns {number}
    * @instance
+   * @private
    */
-  getAvailableSpaceInContainer: function() {
-    return this.container.getBoundingClientRect().bottom - this.offsetBottom - this.offsetTop;
+  _getAvailableSpaceInContainer: function() {
+    return this._container.getBoundingClientRect().bottom - this.offsetBottom - this.offsetTop;
   },
 
   /**
@@ -375,10 +398,11 @@ var PositionSticky = {
    *
    * @returns {number}
    * @instance
+   * @private
    */
-  getElementDistanceFromDocumentTop: function() {
-    var element = (this.isStatic() ? this.element : this.placeholder);
-    var totalOffsetTop = this.latestKnownScrollY + element.getBoundingClientRect().top;
+  _getElementDistanceFromDocumentTop: function() {
+    var element = (this._isStatic() ? this._element : this.placeholder);
+    var totalOffsetTop = this._latestKnownScrollY + element.getBoundingClientRect().top;
     return totalOffsetTop;
   },
 
@@ -386,10 +410,11 @@ var PositionSticky = {
    * Re-measures the cached positions/dimensions that are used during scroll
    *
    * @instance
+   * @public
    */
   refresh: function() {
-    this.calcThreshold();
-    this.setBoundingBoxHeight(true);
+    this._calcThreshold();
+    this._setBoundingBoxHeight(true);
   }
 
 };</code></pre>
@@ -408,7 +433,7 @@ var PositionSticky = {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Thu Jul 31 2014 08:22:10 GMT+0100 (BST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Thu Jul 31 2014 12:13:39 GMT+0100 (BST)
 </footer>
 
 <script> prettyPrint(); </script>
