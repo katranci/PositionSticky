@@ -44,6 +44,18 @@ describe("PositionSticky", function() {
       expect(instance.setElementWidth).toHaveBeenCalled();
     });
 
+    it("calls #setLeftPositionWhenAbsolute", function() {
+      spyOn(PositionSticky, 'setLeftPositionWhenAbsolute');
+      var instance = PositionStickyFactory.create();
+      expect(instance.setLeftPositionWhenAbsolute).toHaveBeenCalled();
+    });
+
+    it("calls #setLeftPositionWhenFixed", function() {
+      spyOn(PositionSticky, 'setLeftPositionWhenFixed');
+      var instance = PositionStickyFactory.create();
+      expect(instance.setLeftPositionWhenFixed).toHaveBeenCalled();
+    });
+
     it("calls #setBoundingBoxHeight", function() {
       spyOn(PositionSticky, 'setBoundingBoxHeight');
       var instance = PositionStickyFactory.create();
@@ -138,6 +150,16 @@ describe("PositionSticky", function() {
       instance.setOffsetBottom();
       expect(instance.offsetBottom).toEqual(30);
     });
+
+    it("stores container's padding-bottom in a property for #makeAbsolute to use", function() {
+      var instance = PositionStickyFactory.create();
+
+      instance.container.style.padding = '20px';
+      instance.container.style.border = '10px solid black';
+
+      instance.setOffsetBottom();
+      expect(instance.containerPaddingBottom).toEqual(20);
+    });
   });
 
   describe("#calcThreshold", function() {
@@ -167,6 +189,65 @@ describe("PositionSticky", function() {
       instance.setElementWidth();
 
       expect(instance.element.style.width).toEqual('900px');
+    });
+  });
+
+  describe("#setLeftPositionWhenAbsolute", function() {
+    it("calculates left position to be used in absolute positioning", function() {
+      var instance = PositionStickyFactory.create();
+
+      instance.setLeftPositionWhenAbsolute();
+      expect(instance.leftPositionWhenAbsolute).toEqual(0);
+
+      instance.container.style.borderLeft = '10px solid black';
+      instance.setLeftPositionWhenAbsolute();
+      expect(instance.leftPositionWhenAbsolute).toEqual(0);
+
+      instance.container.style.paddingLeft = '100px';
+      instance.setLeftPositionWhenAbsolute();
+      expect(instance.leftPositionWhenAbsolute).toEqual(100);
+
+      instance.element.style.marginLeft = '100px';
+      instance.setLeftPositionWhenAbsolute();
+      expect(instance.leftPositionWhenAbsolute).toEqual(100);
+    });
+  });
+
+  describe("#setLeftPositionWhenFixed", function() {
+    it("gets element's total offsetLeft and saves it", function() {
+      var instance = PositionStickyFactory.create();
+
+      instance.container.ownerDocument.body.style.marginLeft = '100px';
+      instance.setLeftPositionWhenFixed();
+      expect(instance.leftPositionWhenFixed).toEqual(100);
+
+      instance.container.ownerDocument.body.style.borderLeft = '10px solid black';
+      instance.setLeftPositionWhenFixed();
+      expect(instance.leftPositionWhenFixed).toEqual(110);
+
+      instance.container.ownerDocument.body.style.paddingLeft = '100px';
+      instance.setLeftPositionWhenFixed();
+      expect(instance.leftPositionWhenFixed).toEqual(210);
+
+      instance.container.style.marginLeft = '100px';
+      instance.setLeftPositionWhenFixed();
+      expect(instance.leftPositionWhenFixed).toEqual(310);
+
+      instance.container.style.borderLeft = '10px solid black';
+      instance.setLeftPositionWhenFixed();
+      expect(instance.leftPositionWhenFixed).toEqual(320);
+
+      instance.container.style.paddingLeft = '100px';
+      instance.setLeftPositionWhenFixed();
+      expect(instance.leftPositionWhenFixed).toEqual(420);
+
+      instance.element.style.marginLeft = '100px';
+      instance.setLeftPositionWhenFixed();
+      expect(instance.leftPositionWhenFixed).toEqual(420);
+
+      instance.container.ownerDocument.body.style.marginLeft = null;
+      instance.container.ownerDocument.body.style.borderLeft = null;
+      instance.container.ownerDocument.body.style.paddingLeft = null;
     });
   });
 
@@ -359,10 +440,16 @@ describe("PositionSticky", function() {
       expect(instance.element.style.position).toEqual('fixed');
     });
 
-    it("assigns 'offsetTop' top element's top style property", function() {
+    it("assigns 'offsetTop' to element's top style property", function() {
       instance.offsetTop = 50;
       instance.makeFixed();
       expect(instance.element.style.top).toEqual('50px');
+    });
+
+    it("assigns 'leftPositionWhenFixed' to element's left style property", function() {
+      instance.leftPositionWhenFixed = 5417;
+      instance.makeFixed();
+      expect(instance.element.style.left).toEqual('5417px');
     });
 
     it("shows placeholder", function() {
@@ -419,10 +506,16 @@ describe("PositionSticky", function() {
       expect(instance.element.style.position).toEqual('absolute');
     });
 
-    it("assigns 'offsetBottom' to sticky element's bottom css property", function() {
-      instance.offsetBottom = 50;
+    it("assigns 'containerPaddingBottom' to sticky element's bottom css property", function() {
+      instance.containerPaddingBottom = 50;
       instance.makeAbsolute();
       expect(instance.element.style.bottom).toEqual('50px');
+    });
+
+    it("assigns 'leftPositionWhenAbsolute' to element's left style property", function() {
+      instance.leftPositionWhenAbsolute = 7145;
+      instance.makeAbsolute();
+      expect(instance.element.style.left).toEqual('7145px');
     });
 
     it("shows placeholder", function() {

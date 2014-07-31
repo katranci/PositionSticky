@@ -14,15 +14,7 @@ var testFiles = [
 ];
 
 
-gulp.task('default', ['test-local', 'lint'], function() {
-  gulp.src(['./src/rAF.js', './src/PositionSticky.js'])
-      .pipe(jsdoc('./docs'))
-      .pipe(concat('PositionSticky.js'))
-      .pipe(gulp.dest('dist'))
-      .pipe(uglify())
-      .pipe(rename('PositionSticky.min.js'))
-      .pipe(gulp.dest('dist'));
-});
+gulp.task('default', ['test-local', 'lint', 'build', 'jsdoc']);
 
 
 gulp.task('test-local', function() {
@@ -44,6 +36,22 @@ gulp.task('test-sauce', function() {
         configFile: 'karma-ci.conf.js',
         action: 'run'
       }));
+});
+
+
+gulp.task('build', function() {
+  return gulp.src(['./src/rAF.js', './src/PositionSticky.js'])
+      .pipe(concat('PositionSticky.js'))
+      .pipe(gulp.dest('dist'))
+      .pipe(uglify())
+      .pipe(rename('PositionSticky.min.js'))
+      .pipe(gulp.dest('dist'));
+});
+
+
+gulp.task('jsdoc', function() {
+  return gulp.src('./src/PositionSticky.js')
+      .pipe(jsdoc('./docs'))
 });
 
 
