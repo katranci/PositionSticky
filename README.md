@@ -31,8 +31,10 @@ var sticky  = PositionSticky.create(element);
 
 Examples
 --------
-* [Simple usage](http://katranci.github.io/PositionSticky/demos/demo1.html)
-* [Support for display and float properties](http://katranci.github.io/PositionSticky/demos/demo2.html)
+* [Simple usage](http://katranci.github.io/PositionSticky/demos/display--block.html)
+* [Left floating elements](http://katranci.github.io/PositionSticky/demos/float--left.html)
+* [Right floating elements](http://katranci.github.io/PositionSticky/demos/float--right.html)
+* [Multiple floating elements](http://katranci.github.io/PositionSticky/demos/multiple-floats.html)
 * [Refresh functionality](http://katranci.github.io/PositionSticky/demos/refresh.html)
 * [A sidebar example](http://katranci.github.io/PositionSticky/demos/sidebar.html)
 

@@ -52,6 +52,9 @@ var PositionSticky = {
     this.threshold = null;
     this.options = options;
     this.boundingBoxHeight = null;
+    this.leftPositionWhenAbsolute = null;
+    this.leftPositionWhenFixed = null;
+    this.containerPaddingBottom = null;
     this.latestKnownScrollY = this.window.pageYOffset;
 
     this.validateContainerPosScheme();
@@ -59,6 +62,8 @@ var PositionSticky = {
     this.setOffsetBottom();
     this.calcThreshold();
     this.setElementWidth();
+    this.setLeftPositionWhenAbsolute();
+    this.setLeftPositionWhenFixed();
     this.setBoundingBoxHeight();
     this.createPlaceholder();
     this.subscribeToWindowScroll();
@@ -96,7 +101,8 @@ var PositionSticky = {
   },
 
   /**
-   * Sets the distance that the sticky element will have from the bottom of its container
+   * Sets the amount to subtract in #canStickyFitInContainer and also sets the
+   * distance that the sticky element will have from the bottom of its container
    * when it is positioned absolutely
    *
    * @instance
@@ -105,6 +111,7 @@ var PositionSticky = {
     var bottomBorderWidth = parseInt(this.window.getComputedStyle(this.container).borderBottomWidth, 10);
     var bottomPadding = parseInt(this.window.getComputedStyle(this.container).paddingBottom, 10);
     this.offsetBottom = bottomBorderWidth + bottomPadding;
+    this.containerPaddingBottom = bottomPadding;
   },
 
   /**
@@ -128,6 +135,29 @@ var PositionSticky = {
   },
 
   /**
+   * Gets the element's distance from its offset parent's left
+   * and subtracts any horizontal margins and saves it
+   *
+   * @instance
+   */
+  setLeftPositionWhenAbsolute: function() {
+    var marginLeft = parseInt(this.window.getComputedStyle(this.element).marginLeft, 10);
+    this.leftPositionWhenAbsolute = this.element.offsetLeft - marginLeft;
+  },
+
+  /**
+   * Gets the element's distance from document left and saves it
+   *
+   * @instance
+   *
+   * @todo Write a test that is covering when the page is scrolled
+   */
+  setLeftPositionWhenFixed: function() {
+    var marginLeft = parseInt(this.window.getComputedStyle(this.element).marginLeft, 10);
+    this.leftPositionWhenFixed = this.window.pageXOffset + this.element.getBoundingClientRect().left - marginLeft;
+  },
+
+  /**
    * Saves element's bounding box height to an instance property so that it is not
    * calculated on every #update. When updatePlaceholder boolean is true, it also
    * updates the placeholder's height.
@@ -147,6 +177,8 @@ var PositionSticky = {
    * when the element is positioned absolutely or fixed
    *
    * @instance
+   *
+   * @todo Float computation doesn't work on Firefox and IE9
    */
   createPlaceholder: function() {
     var placeholder = document.createElement('DIV');
@@ -154,7 +186,7 @@ var PositionSticky = {
     var width   = this.element.getBoundingClientRect().width + 'px';
     var height  = this.boundingBoxHeight + 'px';
     var margin  = this.window.getComputedStyle(this.element).margin;
-    var float   = this.window.getComputedStyle(this.element).float; // TODO: Doesn't work on Firefox
+    var float   = this.window.getComputedStyle(this.element).float;
 
     placeholder.style.display = 'none';
     placeholder.style.width   = width;
@@ -223,6 +255,7 @@ var PositionSticky = {
     this.element.style.bottom = null;
     this.element.style.position = 'fixed';
     this.element.style.top = this.offsetTop + 'px';
+    this.element.style.left = this.leftPositionWhenFixed + 'px';
     this.placeholder.style.display = 'block';
     this.posScheme = PositionSticky.POS_SCHEME_FIXED;
   },
@@ -241,7 +274,8 @@ var PositionSticky = {
   makeAbsolute: function() {
     this.element.style.top = null;
     this.element.style.position = 'absolute';
-    this.element.style.bottom = this.offsetBottom + 'px';
+    this.element.style.bottom = this.containerPaddingBottom + 'px';
+    this.element.style.left = this.leftPositionWhenAbsolute + 'px';
     this.placeholder.style.display = 'block';
     this.posScheme = PositionSticky.POS_SCHEME_ABSOLUTE;
   },
@@ -309,7 +343,8 @@ var PositionSticky = {
 
   /**
    * Calculates element's total offset from the document top.
-   * It uses placeholder if page is scrolled and element became sticky already.
+   * It uses placeholder if it is called when the element is
+   * already sticky (e.g. through #refresh)
    *
    * @returns {number}
    * @instance
