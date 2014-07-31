@@ -154,7 +154,7 @@ var PositionSticky = {
    */
   setLeftPositionWhenFixed: function() {
     var marginLeft = parseInt(this.window.getComputedStyle(this.element).marginLeft, 10);
-    this.leftPositionWhenFixed = this.window.scrollX + this.element.getBoundingClientRect().left - marginLeft;
+    this.leftPositionWhenFixed = this.window.pageXOffset + this.element.getBoundingClientRect().left - marginLeft;
   },
 
   /**
@@ -177,6 +177,8 @@ var PositionSticky = {
    * when the element is positioned absolutely or fixed
    *
    * @instance
+   *
+   * @todo Float computation doesn't work on Firefox and IE9
    */
   createPlaceholder: function() {
     var placeholder = document.createElement('DIV');
@@ -184,7 +186,7 @@ var PositionSticky = {
     var width   = this.element.getBoundingClientRect().width + 'px';
     var height  = this.boundingBoxHeight + 'px';
     var margin  = this.window.getComputedStyle(this.element).margin;
-    var float   = this.window.getComputedStyle(this.element).float; // TODO: Doesn't work on Firefox
+    var float   = this.window.getComputedStyle(this.element).float;
 
     placeholder.style.display = 'none';
     placeholder.style.width   = width;
