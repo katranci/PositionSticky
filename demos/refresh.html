@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>PositionSticky Demo Refresh</title>
+  <title>PositionSticky Demo | Refresh</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     #controls { position: fixed; top: 50px; left: 20px; }
@@ -16,11 +16,11 @@
 <body>
 
   <div id="controls">
-    <button onclick="positionSticky.element.style.height=getRandomInt(50,200)+'px'">Change Sticky Height</button>
+    <button onclick="sticky.element.style.height=getRandomInt(50,200)+'px'">Change Sticky Height</button>
     <br />
     <button onclick="document.body.style.paddingTop=getRandomInt(50,200)+'px'">Change Layout</button>
     <br /><br />
-    <button onclick="positionSticky.refresh()">Refresh</button>
+    <button onclick="sticky.refresh()">Refresh</button>
   </div>
 
   <div class="content">
@@ -32,8 +32,7 @@
 
   <script src="../dist/PositionSticky.js"></script>
   <script>
-    var element = document.querySelector('.sticky');
-    var positionSticky = PositionSticky.create(element);
+    var sticky = PositionSticky.create(document.querySelector('.sticky'));
   </script>
 
 </body>
