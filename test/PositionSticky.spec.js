@@ -8,16 +8,10 @@ describe("PositionSticky", function() {
       expect(instance._element).toBe(element);
     });
 
-    it("sets the sticky element's parent as the container property", function() {
+    it("creates an instance of Container with element's parent node", function() {
       var instance = PositionStickyFactory.create();
       var container = document.getElementById('container');
-      expect(instance._container).toBe(container);
-    });
-
-    it("validates container's positioning scheme", function() {
-      spyOn(PositionSticky, '_validateContainerPosScheme');
-      var instance = PositionStickyFactory.create();
-      expect(instance._validateContainerPosScheme).toHaveBeenCalled();
+      expect(Object.getPrototypeOf(instance._container)).toBe(Container);
     });
 
     it("calls #_setOffsetTop", function() {
@@ -76,39 +70,6 @@ describe("PositionSticky", function() {
 
   });
 
-  describe("#_validateContainerPosScheme", function() {
-
-    describe("when container's positioning scheme is not either relative or absolute", function() {
-
-      it("sets container's position to relative", function() {
-        var container = document.getElementById('container');
-        var mock = { _container: container };
-        var _validateContainerPosScheme = PositionSticky._validateContainerPosScheme.bind(mock);
-
-        _validateContainerPosScheme();
-
-        expect(container.style.position).toEqual('relative');
-      });
-
-    });
-
-    describe("otherwise", function() {
-
-      it("doesn't change container's positioning scheme", function() {
-        var container = document.getElementById('container');
-        container.style.position = 'absolute';
-        var mock = { _container: container };
-        var _validateContainerPosScheme = PositionSticky._validateContainerPosScheme.bind(mock);
-
-        _validateContainerPosScheme();
-
-        expect(container.style.position).toEqual('absolute');
-      });
-
-    });
-
-  });
-
   describe("#_setOffsetTop", function() {
 
     describe("when offsetTop is given in options and it is zero or a positive integer", function() {
@@ -124,16 +85,12 @@ describe("PositionSticky", function() {
     });
 
     describe("otherwise", function() {
-      it("calculates container's padding-top and border-top-width and sets that as 'offsetTop'", function() {
-        var _setOffsetTopSpy = spyOn(PositionSticky, '_setOffsetTop');
+      it("assigns the sum of container's padding-top and border-top-width to 'offsetTop'", function() {
         var instance = PositionStickyFactory.create();
+        instance._container.borderTopWidth = 20;
+        instance._container.paddingTop = 10;
 
-        instance._container.style.padding = '20px';
-        instance._container.style.border = '10px solid black';
-
-        _setOffsetTopSpy.and.callThrough();
         instance._setOffsetTop();
-
         expect(instance.offsetTop).toEqual(30);
       });
     });
@@ -141,24 +98,13 @@ describe("PositionSticky", function() {
   });
 
   describe("#_setOffsetBottom", function() {
-    it("sets container's padding-bottom and border-bottom-width as 'offsetBottom'", function() {
+    it("assigns the sum of container's padding-bottom and border-bottom-width to 'offsetBottom'", function() {
       var instance = PositionStickyFactory.create();
-
-      instance._container.style.padding = '20px';
-      instance._container.style.border = '10px solid black';
+      instance._container.borderBottomWidth = 20;
+      instance._container.paddingBottom = 10;
 
       instance._setOffsetBottom();
       expect(instance.offsetBottom).toEqual(30);
-    });
-
-    it("stores container's padding-bottom in a property for #_makeAbsolute to use", function() {
-      var instance = PositionStickyFactory.create();
-
-      instance._container.style.padding = '20px';
-      instance._container.style.border = '10px solid black';
-
-      instance._setOffsetBottom();
-      expect(instance._containerPaddingBottom).toEqual(20);
     });
   });
 
@@ -181,7 +127,7 @@ describe("PositionSticky", function() {
       var spy = spyOn(PositionSticky, '_setElementWidth');
       var instance = PositionStickyFactory.create();
 
-      instance._container.style.width = '1000px';
+      instance._container.element.style.width = '1000px';
       instance._element.style.padding = '25px';
       instance._element.style.border = '25px solid black';
 
@@ -199,11 +145,11 @@ describe("PositionSticky", function() {
       instance._setLeftPositionWhenAbsolute();
       expect(instance._leftPositionWhenAbsolute).toEqual(0);
 
-      instance._container.style.borderLeft = '10px solid black';
+      instance._container.element.style.borderLeft = '10px solid black';
       instance._setLeftPositionWhenAbsolute();
       expect(instance._leftPositionWhenAbsolute).toEqual(0);
 
-      instance._container.style.paddingLeft = '100px';
+      instance._container.element.style.paddingLeft = '100px';
       instance._setLeftPositionWhenAbsolute();
       expect(instance._leftPositionWhenAbsolute).toEqual(100);
 
@@ -217,27 +163,27 @@ describe("PositionSticky", function() {
     it("gets element's total offsetLeft and saves it", function() {
       var instance = PositionStickyFactory.create();
 
-      instance._container.ownerDocument.body.style.marginLeft = '100px';
+      instance._element.ownerDocument.body.style.marginLeft = '100px';
       instance._setLeftPositionWhenFixed();
       expect(instance._leftPositionWhenFixed).toEqual(100);
 
-      instance._container.ownerDocument.body.style.borderLeft = '10px solid black';
+      instance._element.ownerDocument.body.style.borderLeft = '10px solid black';
       instance._setLeftPositionWhenFixed();
       expect(instance._leftPositionWhenFixed).toEqual(110);
 
-      instance._container.ownerDocument.body.style.paddingLeft = '100px';
+      instance._element.ownerDocument.body.style.paddingLeft = '100px';
       instance._setLeftPositionWhenFixed();
       expect(instance._leftPositionWhenFixed).toEqual(210);
 
-      instance._container.style.marginLeft = '100px';
+      instance._container.element.style.marginLeft = '100px';
       instance._setLeftPositionWhenFixed();
       expect(instance._leftPositionWhenFixed).toEqual(310);
 
-      instance._container.style.borderLeft = '10px solid black';
+      instance._container.element.style.borderLeft = '10px solid black';
       instance._setLeftPositionWhenFixed();
       expect(instance._leftPositionWhenFixed).toEqual(320);
 
-      instance._container.style.paddingLeft = '100px';
+      instance._container.element.style.paddingLeft = '100px';
       instance._setLeftPositionWhenFixed();
       expect(instance._leftPositionWhenFixed).toEqual(420);
 
@@ -245,9 +191,9 @@ describe("PositionSticky", function() {
       instance._setLeftPositionWhenFixed();
       expect(instance._leftPositionWhenFixed).toEqual(420);
 
-      instance._container.ownerDocument.body.style.marginLeft = null;
-      instance._container.ownerDocument.body.style.borderLeft = null;
-      instance._container.ownerDocument.body.style.paddingLeft = null;
+      instance._element.ownerDocument.body.style.marginLeft = null;
+      instance._element.ownerDocument.body.style.borderLeft = null;
+      instance._element.ownerDocument.body.style.paddingLeft = null;
     });
   });
 
@@ -288,7 +234,7 @@ describe("PositionSticky", function() {
       spyOn(PositionSticky, '_setElementWidth');
 
       instance = PositionStickyFactory.create();
-      instance._container.style.width = '100px';
+      instance._container.element.style.width = '100px';
       instance._boundingBoxHeight = 200;
       instance._element.style.margin = '10px';
 
@@ -507,7 +453,7 @@ describe("PositionSticky", function() {
     });
 
     it("assigns 'containerPaddingBottom' to sticky element's bottom css property", function() {
-      instance._containerPaddingBottom = 50;
+      instance._container.paddingBottom = 50;
       instance._makeAbsolute();
       expect(instance._element.style.bottom).toEqual('50px');
     });
@@ -646,7 +592,7 @@ describe("PositionSticky", function() {
 
       instance.offsetTop = 15;
       instance.offsetBottom = 15;
-      spyOn(instance._container, 'getBoundingClientRect').and.returnValue({bottom: 100});
+      spyOn(instance._container.element, 'getBoundingClientRect').and.returnValue({bottom: 100});
 
       expect(instance._getAvailableSpaceInContainer()).toEqual(70);
     });
@@ -659,19 +605,19 @@ describe("PositionSticky", function() {
 
       instance._window.scrollTo(0, 100);
 
-      instance._container.ownerDocument.body.style.marginTop = '100px';
-      instance._container.ownerDocument.body.style.borderTop = '10px solid black';
-      instance._container.ownerDocument.body.style.paddingTop = '100px';
-      instance._container.style.marginTop = '100px';
-      instance._container.style.borderTop = '10px solid black';
-      instance._container.style.paddingTop = '100px';
+      instance._element.ownerDocument.body.style.marginTop = '100px';
+      instance._element.ownerDocument.body.style.borderTop = '10px solid black';
+      instance._element.ownerDocument.body.style.paddingTop = '100px';
+      instance._container.element.style.marginTop = '100px';
+      instance._container.element.style.borderTop = '10px solid black';
+      instance._container.element.style.paddingTop = '100px';
       instance._element.style.marginTop = '100px';
 
       expect(instance._getElementDistanceFromDocumentTop()).toEqual(520);
 
-      instance._container.ownerDocument.body.style.marginTop = null;
-      instance._container.ownerDocument.body.style.borderTop = null;
-      instance._container.ownerDocument.body.style.paddingTop = null;
+      instance._element.ownerDocument.body.style.marginTop = null;
+      instance._element.ownerDocument.body.style.borderTop = null;
+      instance._element.ownerDocument.body.style.paddingTop = null;
     });
 
     it("uses placeholder in calculations when the element is not static", function() {

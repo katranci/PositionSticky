@@ -48,7 +48,7 @@ var PositionSticky = {
     this.constructor = PositionSticky;
     this._window = window;
     this._element = element;
-    this._container = element.parentNode;
+    this._container = Container.create(element.parentNode);
     this._posScheme = PositionSticky.POS_SCHEME_STATIC;
     this._isTicking = false;
     this._threshold = null;
@@ -56,10 +56,8 @@ var PositionSticky = {
     this._boundingBoxHeight = null;
     this._leftPositionWhenAbsolute = null;
     this._leftPositionWhenFixed = null;
-    this._containerPaddingBottom = null;
     this._latestKnownScrollY = this._window.pageYOffset;
 
-    this._validateContainerPosScheme();
     this._setOffsetTop();
     this._setOffsetBottom();
     this._calcThreshold();
@@ -74,20 +72,6 @@ var PositionSticky = {
   },
 
   /**
-   * Ensures that the container's position is either 'relative' or 'absolute'
-   * so that when the sticky element is positioned absolutely it is positioned within its container
-   *
-   * @instance
-   * @private
-   */
-  _validateContainerPosScheme: function() {
-    var containerPosScheme = this._container.style.position;
-    if (containerPosScheme != 'relative' && containerPosScheme != 'absolute') {
-      this._container.style.position = 'relative';
-    }
-  },
-
-  /**
    * Sets the distance that the sticky element will have from the top of viewport
    * when it becomes sticky
    *
@@ -98,9 +82,7 @@ var PositionSticky = {
     if (typeof this._options.offsetTop === 'number' && this._options.offsetTop >= 0) {
       this.offsetTop = this._options.offsetTop;
     } else {
-      var topBorderWidth = parseInt(this._window.getComputedStyle(this._container).borderTopWidth, 10);
-      var topPadding = parseInt(this._window.getComputedStyle(this._container).paddingTop, 10);
-      this.offsetTop = topBorderWidth + topPadding;
+      this.offsetTop = this._container.borderTopWidth + this._container.paddingTop;
     }
   },
 
@@ -113,10 +95,7 @@ var PositionSticky = {
    * @private
    */
   _setOffsetBottom: function() {
-    var bottomBorderWidth = parseInt(this._window.getComputedStyle(this._container).borderBottomWidth, 10);
-    var bottomPadding = parseInt(this._window.getComputedStyle(this._container).paddingBottom, 10);
-    this.offsetBottom = bottomBorderWidth + bottomPadding;
-    this._containerPaddingBottom = bottomPadding;
+    this.offsetBottom = this._container.borderBottomWidth + this._container.paddingBottom;
   },
 
   /**
@@ -205,7 +184,7 @@ var PositionSticky = {
     placeholder.style.margin  = margin;
     placeholder.style.float   = float;
 
-    this._container.insertBefore(placeholder, this._element);
+    this._container.element.insertBefore(placeholder, this._element);
     this.placeholder = placeholder;
   },
 
@@ -293,7 +272,7 @@ var PositionSticky = {
   _makeAbsolute: function() {
     this._element.style.top = null;
     this._element.style.position = 'absolute';
-    this._element.style.bottom = this._containerPaddingBottom + 'px';
+    this._element.style.bottom = this._container.paddingBottom + 'px';
     this._element.style.left = this._leftPositionWhenAbsolute + 'px';
     this.placeholder.style.display = 'block';
     this._posScheme = PositionSticky.POS_SCHEME_ABSOLUTE;
@@ -361,7 +340,7 @@ var PositionSticky = {
    * @private
    */
   _getAvailableSpaceInContainer: function() {
-    return this._container.getBoundingClientRect().bottom - this.offsetBottom - this.offsetTop;
+    return this._container.element.getBoundingClientRect().bottom - this.offsetBottom - this.offsetTop;
   },
 
   /**
