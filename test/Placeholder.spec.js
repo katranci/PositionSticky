@@ -53,4 +53,13 @@ describe("Placeholder", function() {
     });
   });
 
+  describe("#refresh", function() {
+    it("re-sets element's height from sticky's boundingBoxHeight", function() {
+      var instance = PlaceholderFactory.create();
+      instance._sticky.boundingBoxHeight = 5417;
+      instance.refresh();
+      expect(instance.element.style.height).toEqual('5417px');
+    });
+  });
+
 });

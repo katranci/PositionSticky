@@ -60,6 +60,16 @@ var Placeholder = {
 
     this._sticky.element.parentNode.insertBefore(placeholder, this._sticky.element);
     this.element = placeholder;
+  },
+
+  /**
+   * Re-sets element's height from sticky's boundingBoxHeight. It is called
+   * from PositionSticky#refresh.
+   *
+   * @instance
+   */
+  refresh: function() {
+    this.element.style.height = this._sticky.boundingBoxHeight + 'px';
   }
 
 };

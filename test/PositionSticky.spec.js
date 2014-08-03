@@ -213,13 +213,6 @@ describe("PositionSticky", function() {
       instance._setBoundingBoxHeight();
       expect(instance.boundingBoxHeight).toEqual(140);
     });
-
-    it("updates placeholder height when 'updatePlaceholder' parameter is set to true", function() {
-      var instance = PositionStickyFactory.create();
-      instance.element.style.height = '100px';
-      instance._setBoundingBoxHeight(true);
-      expect(instance._placeholder.element.style.height).toEqual('100px');
-    });
   });
 
   describe("#_createPlaceholder", function() {
@@ -618,7 +611,16 @@ describe("PositionSticky", function() {
       instance.refresh();
 
       expect(instance._calcThreshold).toHaveBeenCalled();
-      expect(instance._setBoundingBoxHeight).toHaveBeenCalledWith(true);
+      expect(instance._setBoundingBoxHeight).toHaveBeenCalled();
+    });
+
+    it("calls Placeholder#refresh", function() {
+      var instance = PositionStickyFactory.create();
+
+      spyOn(instance._placeholder, 'refresh');
+      instance.refresh();
+
+      expect(instance._placeholder.refresh).toHaveBeenCalled();
     });
   });
 

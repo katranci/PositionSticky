@@ -130,6 +130,16 @@ var Placeholder = {
 
     this._sticky.element.parentNode.insertBefore(placeholder, this._sticky.element);
     this.element = placeholder;
+  },
+
+  /**
+   * Re-sets element's height from sticky's boundingBoxHeight. It is called
+   * from PositionSticky#refresh.
+   *
+   * @instance
+   */
+  refresh: function() {
+    this.element.style.height = this._sticky.boundingBoxHeight + 'px';
   }
 
 };
@@ -283,18 +293,13 @@ var PositionSticky = {
 
   /**
    * Saves element's bounding box height to an instance property so that it is not
-   * calculated on every #_update. When updatePlaceholder boolean is true, it also
-   * updates the placeholder's height.
+   * calculated on every #_update.
    *
-   * @param updatePlaceholder {boolean}
    * @instance
    * @private
    */
-  _setBoundingBoxHeight: function(updatePlaceholder) {
+  _setBoundingBoxHeight: function() {
     this.boundingBoxHeight = this.element.getBoundingClientRect().height;
-    if (updatePlaceholder === true) {
-      this._placeholder.element.style.height = this.boundingBoxHeight + 'px';
-    }
   },
 
   /**
@@ -486,7 +491,8 @@ var PositionSticky = {
    */
   refresh: function() {
     this._calcThreshold();
-    this._setBoundingBoxHeight(true);
+    this._setBoundingBoxHeight();
+    this._placeholder.refresh();
   }
 
 };
