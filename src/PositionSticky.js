@@ -47,13 +47,14 @@ var PositionSticky = {
   _init: function(element, options) {
     this.constructor = PositionSticky;
     this._window = window;
-    this._element = element;
+    this.element = element;
     this._container = Container.create(element.parentNode);
+    this._placeholder = null;
     this._posScheme = PositionSticky.POS_SCHEME_STATIC;
     this._isTicking = false;
     this._threshold = null;
     this._options = options;
-    this._boundingBoxHeight = null;
+    this.boundingBoxHeight = null;
     this._leftPositionWhenAbsolute = null;
     this._leftPositionWhenFixed = null;
     this._latestKnownScrollY = this._window.pageYOffset;
@@ -116,8 +117,8 @@ var PositionSticky = {
    * @private
    */
   _setElementWidth: function() {
-    var width = this._window.getComputedStyle(this._element).width;
-    this._element.style.width = width;
+    var width = this._window.getComputedStyle(this.element).width;
+    this.element.style.width = width;
   },
 
   /**
@@ -128,8 +129,8 @@ var PositionSticky = {
    * @private
    */
   _setLeftPositionWhenAbsolute: function() {
-    var marginLeft = parseInt(this._window.getComputedStyle(this._element).marginLeft, 10);
-    this._leftPositionWhenAbsolute = this._element.offsetLeft - marginLeft;
+    var marginLeft = parseInt(this._window.getComputedStyle(this.element).marginLeft, 10);
+    this._leftPositionWhenAbsolute = this.element.offsetLeft - marginLeft;
   },
 
   /**
@@ -141,8 +142,8 @@ var PositionSticky = {
    * @todo Write a test that is covering when the page is scrolled
    */
   _setLeftPositionWhenFixed: function() {
-    var marginLeft = parseInt(this._window.getComputedStyle(this._element).marginLeft, 10);
-    this._leftPositionWhenFixed = this._window.pageXOffset + this._element.getBoundingClientRect().left - marginLeft;
+    var marginLeft = parseInt(this._window.getComputedStyle(this.element).marginLeft, 10);
+    this._leftPositionWhenFixed = this._window.pageXOffset + this.element.getBoundingClientRect().left - marginLeft;
   },
 
   /**
@@ -155,9 +156,9 @@ var PositionSticky = {
    * @private
    */
   _setBoundingBoxHeight: function(updatePlaceholder) {
-    this._boundingBoxHeight = this._element.getBoundingClientRect().height;
+    this.boundingBoxHeight = this.element.getBoundingClientRect().height;
     if (updatePlaceholder === true) {
-      this.placeholder.style.height = this._boundingBoxHeight + 'px';
+      this._placeholder.element.style.height = this.boundingBoxHeight + 'px';
     }
   },
 
@@ -167,25 +168,9 @@ var PositionSticky = {
    *
    * @instance
    * @private
-   *
-   * @todo Float computation doesn't work on Firefox and IE9
    */
   _createPlaceholder: function() {
-    var placeholder = document.createElement('DIV');
-
-    var width   = this._element.getBoundingClientRect().width + 'px';
-    var height  = this._boundingBoxHeight + 'px';
-    var margin  = this._window.getComputedStyle(this._element).margin;
-    var float   = this._window.getComputedStyle(this._element).float;
-
-    placeholder.style.display = 'none';
-    placeholder.style.width   = width;
-    placeholder.style.height  = height;
-    placeholder.style.margin  = margin;
-    placeholder.style.float   = float;
-
-    this._container.element.insertBefore(placeholder, this._element);
-    this.placeholder = placeholder;
+    this._placeholder = Placeholder.create(this);
   },
 
   /**
@@ -229,8 +214,8 @@ var PositionSticky = {
    * @private
    */
   _makeStatic: function() {
-    this._element.style.position = 'static';
-    this.placeholder.style.display = 'none';
+    this.element.style.position = 'static';
+    this._placeholder.element.style.display = 'none';
     this._posScheme = PositionSticky.POS_SCHEME_STATIC;
   },
 
@@ -248,11 +233,11 @@ var PositionSticky = {
    * @private
    */
   _makeFixed: function() {
-    this._element.style.bottom = null;
-    this._element.style.position = 'fixed';
-    this._element.style.top = this.offsetTop + 'px';
-    this._element.style.left = this._leftPositionWhenFixed + 'px';
-    this.placeholder.style.display = 'block';
+    this.element.style.bottom = null;
+    this.element.style.position = 'fixed';
+    this.element.style.top = this.offsetTop + 'px';
+    this.element.style.left = this._leftPositionWhenFixed + 'px';
+    this._placeholder.element.style.display = 'block';
     this._posScheme = PositionSticky.POS_SCHEME_FIXED;
   },
 
@@ -270,11 +255,11 @@ var PositionSticky = {
    * @private
    */
   _makeAbsolute: function() {
-    this._element.style.top = null;
-    this._element.style.position = 'absolute';
-    this._element.style.bottom = this._container.paddingBottom + 'px';
-    this._element.style.left = this._leftPositionWhenAbsolute + 'px';
-    this.placeholder.style.display = 'block';
+    this.element.style.top = null;
+    this.element.style.position = 'absolute';
+    this.element.style.bottom = this._container.paddingBottom + 'px';
+    this.element.style.left = this._leftPositionWhenAbsolute + 'px';
+    this._placeholder.element.style.display = 'block';
     this._posScheme = PositionSticky.POS_SCHEME_ABSOLUTE;
   },
 
@@ -328,7 +313,7 @@ var PositionSticky = {
    * @private
    */
   _canStickyFitInContainer: function() {
-    return this._getAvailableSpaceInContainer() >= this._boundingBoxHeight;
+    return this._getAvailableSpaceInContainer() >= this.boundingBoxHeight;
   },
 
   /**
@@ -353,7 +338,7 @@ var PositionSticky = {
    * @private
    */
   _getElementDistanceFromDocumentTop: function() {
-    var element = (this._isStatic() ? this._element : this.placeholder);
+    var element = (this._isStatic() ? this.element : this._placeholder.element);
     var totalOffsetTop = this._latestKnownScrollY + element.getBoundingClientRect().top;
     return totalOffsetTop;
   },

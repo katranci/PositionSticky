@@ -11,6 +11,7 @@ var gulp    = require('gulp'),
 var testFiles = [
   'src/PositionSticky.js',
   'src/Container.js',
+  'src/Placeholder.js',
   'test/*.js'
 ];
 
@@ -41,7 +42,7 @@ gulp.task('test-sauce', function() {
 
 
 gulp.task('build', function() {
-  return gulp.src(['./src/rAF.js', './src/PositionSticky.js', './src/Container.js'])
+  return gulp.src('./src/*.js')
       .pipe(concat('PositionSticky.js'))
       .pipe(gulp.dest('dist'))
       .pipe(uglify())
@@ -51,7 +52,7 @@ gulp.task('build', function() {
 
 
 gulp.task('jsdoc', function() {
-  return gulp.src(['./src/PositionSticky.js', './src/Container.js'])
+  return gulp.src('./src/*.js')
       .pipe(jsdoc.parser({}))
       .pipe(jsdoc.generator('./docs', {}, {
         showPrivate: true
@@ -60,7 +61,7 @@ gulp.task('jsdoc', function() {
 
 
 gulp.task('lint', function() {
-  return gulp.src(['./src/rAF.js', './src/PositionSticky.js', './src/Container.js'])
+  return gulp.src('./src/*.js')
       .pipe(jshint())
       .pipe(jshint.reporter(stylish));
 });

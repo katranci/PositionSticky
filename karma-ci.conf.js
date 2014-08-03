@@ -41,6 +41,7 @@ module.exports = function(config) {
     files: [
       'src/PositionSticky.js',
       'src/Container.js',
+      'src/Placeholder.js',
       'test/*.js'
     ],
 
