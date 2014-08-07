@@ -2,8 +2,8 @@ describe("Placeholder", function() {
 
   describe("#_init", function() {
 
-    it("saves the given PositionSticky instance in a property", function() {
-      var sticky = PositionStickyFactory.create();
+    it("saves the given Sticky instance in a property", function() {
+      var sticky = StickyFactory.create();
       var instance = PlaceholderFactory.create(sticky);
       expect(instance._sticky).toBe(sticky);
     });
@@ -22,8 +22,8 @@ describe("Placeholder", function() {
 
     beforeEach(function() {
       _createElementSpy = spyOn(Placeholder, '_createElement');
-      spyOn(PositionSticky, '_setElementWidth');
-      sticky = PositionStickyFactory.create();
+      spyOn(Sticky, '_setElementWidth');
+      sticky = StickyFactory.create();
     });
 
     it("creates a hidden div with the same box model properties as the sticky element and inserts it just before the sticky element", function() {

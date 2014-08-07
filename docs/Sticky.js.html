@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: Container.js</title>
+    <title>JSDoc: Source: Sticky.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: Container.js</h1>
+    <h1 class="page-title">Source: Sticky.js</h1>
 
     
 
@@ -26,72 +26,74 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @namespace Container
+ * @namespace Sticky
  * @author Ahmet Katrancı &lt;ahmet@katranci.co.uk>
  */
-var Container = {
+var Sticky = {
 
   /**
-   * Creates an instance of Container
+   * Creates an instance of Sticky
    *
    * @param element
-   * @returns {Container}
+   * @returns {Sticky}
    * @static
    * @public
    */
   create: function(element) {
-    return Object.create(Container)._init(element);
+    return Object.create(Sticky)._init(element);
   },
 
   /**
    * Constructor method
    *
    * @param element {HTMLElement}
-   * @returns {Container}
+   * @returns {Sticky}
    * @instance
    * @private
    */
   _init: function(element) {
-    this.constructor = Container;
+    this.constructor = Sticky;
     this._window = window;
     this.element = element;
-    this.paddingTop = null;
-    this.paddingBottom = null;
-    this.borderTopWidth = null;
-    this.borderBottomWidth = null;
+    this.boundingBoxHeight = null;
 
-    this._validatePosScheme();
-    this._setLayoutProperties();
+    this._setElementWidth();
+    this._setBoundingBoxHeight();
 
     return this;
   },
 
   /**
-   * Ensures that the container's position is either 'relative' or 'absolute'
-   * so that when the sticky element is positioned absolutely it is positioned within its container
+   * Applies element's computed width to its inline styling so that when the element
+   * is positioned absolutely or fixed it doesn't lose its shape
    *
    * @instance
    * @private
    */
-  _validatePosScheme: function() {
-    var posScheme = this.element.style.position;
-    if (posScheme != 'relative' &amp;&amp; posScheme != 'absolute') {
-      this.element.style.position = 'relative';
-    }
+  _setElementWidth: function() {
+    var width = this._window.getComputedStyle(this.element).width;
+    this.element.style.width = width;
   },
 
   /**
-   * Caches several layout properties
+   * Saves element's bounding box height to an instance property so that it is not
+   * calculated on every PositionSticky#_update.
    *
    * @instance
    * @private
    */
-  _setLayoutProperties: function() {
-    var computedStyles = this._window.getComputedStyle(this.element);
-    this.paddingTop = parseInt(computedStyles.paddingTop, 10);
-    this.paddingBottom = parseInt(computedStyles.paddingBottom, 10);
-    this.borderTopWidth = parseInt(computedStyles.borderTopWidth, 10);
-    this.borderBottomWidth = parseInt(computedStyles.borderBottomWidth, 10);
+  _setBoundingBoxHeight: function() {
+    this.boundingBoxHeight = this.element.getBoundingClientRect().height;
+  },
+
+  /**
+   * Re-measures element's boundingBoxHeight. It is called
+   * from PositionSticky#refresh.
+   *
+   * @instance
+   */
+  refresh: function() {
+    this._setBoundingBoxHeight();
   }
 
 };</code></pre>

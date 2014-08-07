@@ -6,7 +6,7 @@ var PlaceholderFactory = {
   },
 
   createSticky: function() {
-    return PositionStickyFactory.create();
+    return StickyFactory.create();
   }
 
 };
