@@ -40,6 +40,9 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'src/PositionSticky.js',
+      'src/Container.js',
+      'src/Placeholder.js',
+      'src/Sticky.js',
       'test/*.js'
     ],
 
