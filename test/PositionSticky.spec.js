@@ -1,3 +1,9 @@
+var PositionStickyFactory = require('./PositionStickyFactory');
+var PositionSticky        = require('../src/PositionSticky');
+var Container             = require('../src/Container');
+var Placeholder           = require('../src/Placeholder');
+var Sticky                = require('../src/Sticky');
+
 describe("PositionSticky", function() {
 
   describe("#_init", function() {

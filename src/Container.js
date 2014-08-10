@@ -68,3 +68,5 @@ var Container = {
   }
 
 };
+
+module.exports = Container;

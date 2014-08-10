@@ -16,7 +16,7 @@
 <body>
 
   <div id="controls">
-    <button onclick="sticky.element.style.height=getRandomInt(50,200)+'px'">Change Sticky Height</button><br />
+    <button onclick="document.querySelector('.sticky').style.height=getRandomInt(50,200)+'px'">Change Sticky Height</button><br />
     <button onclick="document.body.style.paddingTop=getRandomInt(50,200)+'px';">Change Offsets</button>
     <br /><br />
     <button onclick="sticky.refresh()">Invoke #refresh</button>

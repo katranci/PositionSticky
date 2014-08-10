@@ -1,3 +1,6 @@
+var StickyFactory = require('./StickyFactory');
+var Sticky        = require('../src/Sticky');
+
 describe("Sticky", function() {
 
   describe("#_init", function() {

@@ -1,3 +1,6 @@
+var Placeholder   = require('../src/Placeholder');
+var StickyFactory = require('./StickyFactory');
+
 var PlaceholderFactory = {
 
   create: function(sticky) {
@@ -10,3 +13,5 @@ var PlaceholderFactory = {
   }
 
 };
+
+module.exports = PlaceholderFactory;
