@@ -1,5 +1,4 @@
-// Karma configuration
-// Generated on Wed Jul 09 2014 12:24:01 GMT+0100 (BST)
+var WebpackRewirePlugin = require('rewire-webpack');
 
 module.exports = function(config) {
   config.set({
@@ -15,8 +14,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'src/PositionSticky.js',
-      'test/*.js'
+      'test/*.spec.js'
     ],
 
 
@@ -29,14 +27,20 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/*.js': ['coverage']
+      'test/*.spec.js': ['webpack']
+    },
+
+
+    // webpack configuration
+    webpack: {
+      plugins: [new WebpackRewirePlugin()]
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress'],
 
 
     // web server port
