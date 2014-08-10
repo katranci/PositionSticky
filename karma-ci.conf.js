@@ -1,8 +1,6 @@
-// Karma configuration for Sauce Labs
-// This is the configuration used in CI boxes
-
-var fs        = require('fs'),
-    bowerJson = require('./bower.json');
+var fs                  = require('fs'),
+    bowerJson           = require('./bower.json'),
+    WebpackRewirePlugin = require('rewire-webpack');
 
 
 module.exports = function(config) {
@@ -46,6 +44,11 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'test/*.spec.js': ['webpack']
+    },
+
+    // webpack configuration
+    webpack: {
+      plugins: [new WebpackRewirePlugin()]
     },
 
     // test results reporter to use
