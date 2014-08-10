@@ -2,13 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>PositionSticky Demo #1</title>
-  <style>
-    body, h2 {margin: 0;}
-    body {padding: 0 20% 1000px; background: #FFFFFF; font: 1.2rem sans-serif;}
-    .content {margin: 50px 0; padding: 20px; background: #D9E8F5;}
-    .sticky {padding: 10px; border: 10px solid rgba(0,0,0,0.3); background: #304269; color: #FFFFFF;}
-  </style>
+  <title>PositionSticky Demo | Display Block</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
@@ -21,8 +16,7 @@
 
   <script src="../dist/PositionSticky.js"></script>
   <script>
-    var element = document.querySelector('.sticky');
-    var positionSticky = PositionSticky.create(element);
+    var sticky = PositionSticky.create(document.querySelector('.sticky'));
   </script>
 
 </body>
