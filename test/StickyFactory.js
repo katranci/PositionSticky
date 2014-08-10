@@ -1,3 +1,5 @@
+var Sticky = require('../src/Sticky');
+
 var StickyFactory = {
 
   create: function(element) {
@@ -23,3 +25,5 @@ var StickyFactory = {
   }
 
 };
+
+module.exports = StickyFactory;

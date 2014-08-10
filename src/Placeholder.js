@@ -73,3 +73,5 @@ var Placeholder = {
   }
 
 };
+
+module.exports = Placeholder;

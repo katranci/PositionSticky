@@ -2,6 +2,11 @@
  * @namespace PositionSticky
  * @author Ahmet Katrancı <ahmet@katranci.co.uk>
  */
+var Container   = require('../src/Container');
+var Placeholder = require('../src/Placeholder');
+var Sticky      = require('../src/Sticky');
+var rAF         = require('raf');
+
 var PositionSticky = {
 
   /**
@@ -164,7 +169,7 @@ var PositionSticky = {
   _onScroll: function() {
     if (!this._isTicking) {
       this._latestKnownScrollY = this._window.pageYOffset;
-      this._window.requestAnimationFrame(this._update.bind(this));
+      rAF(this._update.bind(this));
       this._isTicking = true;
     }
   },
@@ -325,3 +330,5 @@ var PositionSticky = {
   }
 
 };
+
+module.exports = PositionSticky;

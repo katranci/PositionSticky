@@ -1,3 +1,8 @@
+var StickyFactory      = require('./StickyFactory');
+var PlaceholderFactory = require('./PlaceholderFactory');
+var Placeholder        = require('../src/Placeholder');
+var Sticky             = require('../src/Sticky');
+
 describe("Placeholder", function() {
 
   describe("#_init", function() {

@@ -1,3 +1,5 @@
+var Container = require('../src/Container');
+
 var ContainerFactory = {
 
   create: function(element) {
@@ -23,3 +25,5 @@ var ContainerFactory = {
   }
 
 };
+
+module.exports = ContainerFactory;

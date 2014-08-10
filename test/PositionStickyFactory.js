@@ -1,3 +1,5 @@
+var PositionSticky = require('../src/PositionSticky');
+
 var PositionStickyFactory = {
 
   create: function(element, options) {
@@ -27,3 +29,5 @@ var PositionStickyFactory = {
     }
   }
 };
+
+module.exports = PositionStickyFactory;

@@ -1,8 +1,6 @@
-// Karma configuration for Sauce Labs
-// This is the configuration used in CI boxes
-
-var fs        = require('fs'),
-    bowerJson = require('./bower.json');
+var fs                  = require('fs'),
+    bowerJson           = require('./bower.json'),
+    WebpackRewirePlugin = require('rewire-webpack');
 
 
 module.exports = function(config) {
@@ -39,13 +37,19 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'src/PositionSticky.js',
-      'src/Container.js',
-      'src/Placeholder.js',
-      'src/Sticky.js',
-      'test/*.js'
+      'test/*.spec.js'
     ],
 
+    // preprocess matching files before serving them to the browser
+    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+    preprocessors: {
+      'test/*.spec.js': ['webpack']
+    },
+
+    // webpack configuration
+    webpack: {
+      plugins: [new WebpackRewirePlugin()]
+    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'

@@ -24,6 +24,24 @@ Usage
 
 ```
 
+PositionSticky follows [UMD pattern](https://github.com/umdjs/umd).
+
+###Consume as a CommonJS module
+```javascript
+var PositionSticky = require('./bower_components/PositionSticky/dist/PositionSticky.js');
+var element = document.getElementById('sticky');
+var sticky  = PositionSticky.create(element);  
+```
+
+###Consume as an AMD module
+```javascript
+require(['./bower_components/PositionSticky/dist/PositionSticky.js'], function(PositionSticky) {
+  var element = document.getElementById('sticky');
+  var sticky  = PositionSticky.create(element);
+});  
+```
+
+###Consume as a global variable
 ```javascript
 var element = document.getElementById('sticky');
 var sticky  = PositionSticky.create(element);  
@@ -37,7 +55,6 @@ Examples
 * [Multiple floating elements](http://katranci.github.io/PositionSticky/demos/multiple-floats.html)
 * [Refresh functionality](http://katranci.github.io/PositionSticky/demos/refresh.html)
 * [A sidebar example](http://katranci.github.io/PositionSticky/demos/sidebar.html)
-
 
 Browser Support
 ---------------

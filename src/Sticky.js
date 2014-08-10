@@ -70,3 +70,5 @@ var Sticky = {
   }
 
 };
+
+module.exports = Sticky;

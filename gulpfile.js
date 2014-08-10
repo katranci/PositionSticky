@@ -1,19 +1,15 @@
 var gulp    = require('gulp'),
-    concat  = require('gulp-concat'),
     uglify  = require('gulp-uglify'),
     jshint  = require('gulp-jshint'),
     stylish = require('jshint-stylish'),
     jsdoc   = require('gulp-jsdoc'),
     karma   = require('gulp-karma'),
-    rename  = require('gulp-rename');
+    rename  = require('gulp-rename'),
+    webpack = require('gulp-webpack');
 
 
 var testFiles = [
-  'src/PositionSticky.js',
-  'src/Container.js',
-  'src/Placeholder.js',
-  'src/Sticky.js',
-  'test/*.js'
+  'test/*.spec.js'
 ];
 
 
@@ -43,8 +39,14 @@ gulp.task('test-sauce', function() {
 
 
 gulp.task('build', function() {
-  return gulp.src('./src/*.js')
-      .pipe(concat('PositionSticky.js'))
+  return gulp.src('./src/PositionSticky.js')
+      .pipe(webpack({
+        output: {
+          library: 'PositionSticky',
+          libraryTarget: 'umd'
+        }
+      }))
+      .pipe(rename('PositionSticky.js'))
       .pipe(gulp.dest('dist'))
       .pipe(uglify())
       .pipe(rename('PositionSticky.min.js'))

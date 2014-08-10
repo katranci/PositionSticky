@@ -1,3 +1,6 @@
+var ContainerFactory = require('./ContainerFactory');
+var Container        = require('../src/Container');
+
 describe("Container", function() {
 
   describe("#_init", function() {
