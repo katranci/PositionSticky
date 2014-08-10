@@ -1,8 +1,11 @@
-var PositionStickyFactory = require('./PositionStickyFactory');
-var PositionSticky        = require('../src/PositionSticky');
+var rewire                = require('rewire');
+var PositionStickyFactory = rewire('./PositionStickyFactory');
+var PositionSticky        = rewire('../src/PositionSticky');
 var Container             = require('../src/Container');
 var Placeholder           = require('../src/Placeholder');
 var Sticky                = require('../src/Sticky');
+
+PositionStickyFactory.__set__('PositionSticky', PositionSticky);
 
 describe("PositionSticky", function() {
 
@@ -203,13 +206,17 @@ describe("PositionSticky", function() {
 
   describe("#_onScroll", function() {
 
-    var mockWindow, mock, _onScroll;
+    var rAF, mock, _onScroll, rAFRevert;
 
     beforeEach(function() {
-      mockWindow = { requestAnimationFrame: function(callback) { callback(); }};
-      mock = { _window: mockWindow, isTicking: false, _update: function() {} };
+      rAF = function(callback) { callback(); };
+      rAFRevert = PositionSticky.__set__('rAF', rAF);
+      mock = { _window: jasmine.createSpy(), isTicking: false, _update: jasmine.createSpy() };
       _onScroll = PositionSticky._onScroll.bind(mock);
-      spyOn(mock, '_update');
+    });
+
+    afterEach(function() {
+      rAFRevert();
     });
 
     it("runs #_update on every animation frame", function() {
